@@ -8,14 +8,14 @@
           Add New Task
         </button>
       </div>
-      <card-component @message="editTask" v-for="alert in todoList" :key="alert" :title="alert"/>
+      <card @message="editTask" v-for="alert in todoList" :key="alert" :title="alert" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CardComponent from './components/Card.vue';
+import Card from './components/Card.vue';
 import HeaderComponent from './components/Header.vue';
 
 export default defineComponent({
@@ -24,25 +24,26 @@ export default defineComponent({
     return {
       todoList: ['Ir a correr', 'Comprar en el almacen'],
       newTask: '',
-      editing: false,
+      isEditing: false,
       index: -1,
+      EDITING_TASK: true,
+      EDITED_TASK: false,
     };
   },
   components: {
-    CardComponent,
+    Card,
     HeaderComponent,
   },
   methods: {
     saveNewTask():void {
-      const checkCondition = (this.index === -1 && !this.exists() && !this.editing && this.newTask !== '');
+      const checkCondition = (this.index === -1 && !this.exists() && !this.isEditing && this.newTask !== '');
+
       if (checkCondition) {
         this.todoList.push(this.newTask);
       } else {
-        this.todoList[this.index] = this.newTask;
-        this.editing = false;
-        this.index = -1;
+        this.modify(this.index, this.newTask);
+        this.clearNewTask();
       }
-      this.clearNewTask();
     },
     clearNewTask():void {
       this.newTask = '';
@@ -51,12 +52,27 @@ export default defineComponent({
       return this.newTask !== '';
     },
     editTask(title: string):void {
-      this.index = this.todoList.indexOf(title);
-      this.editing = true;
+      this.index = this.getTaskIndex(title);
+      this.setState(this.EDITING_TASK);
       this.newTask = title;
     },
     exists():boolean {
       return this.todoList.includes(this.newTask);
+    },
+    getTaskIndex(title: string):number {
+      return this.todoList.indexOf(title);
+    },
+    setIndes(newIndex: number): void {
+      this.index = newIndex;
+    },
+    setState(taskState: boolean): void {
+      this.isEditing = taskState;
+    },
+    modify(index: number, task: string): void {
+      this.todoList[index] = `${task} `;
+      this.todoList[index].trim();
+      this.setState(this.EDITED_TASK);
+      this.index = -1;
     },
   },
 });

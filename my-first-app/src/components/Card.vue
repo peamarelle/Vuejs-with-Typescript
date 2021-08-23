@@ -1,11 +1,12 @@
 <template>
-<div class="alert alert-primary" role="alert">
+<div class="alert" :class="[ isEditing ? warning : primary ]">
   <div class="d-flex justify-content-between">
     <div>
       {{ title }}
     </div>
     <div>
-      <button class="btn btn-success btn-sm" @click="edit"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-success btn-sm"
+       @click="edit"><i class="fas fa-edit"></i></button>
       <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
     </div>
   </div>
@@ -19,10 +20,17 @@ export default defineComponent({
   name: 'Card',
   props: {
     title: String,
-    description: String,
+  },
+  data() {
+    return {
+      isEditing: false,
+      primary: 'alert-primary',
+      warning: 'alert-warning',
+    };
   },
   methods: {
     edit():void {
+      this.isEditing = true;
       this.$emit('message', this.title);
     },
   },
