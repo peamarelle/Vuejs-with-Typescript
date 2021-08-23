@@ -8,7 +8,13 @@
           Add New Task
         </button>
       </div>
-      <card @message="editTask" v-for="alert in todoList" :key="alert" :title="alert" />
+      <card
+        v-for="alert in todoList"
+        :key="alert"
+        :title="alert"
+        @message="editTask"
+        @title="deleteTask"
+      />
     </div>
   </div>
 </template>
@@ -55,6 +61,9 @@ export default defineComponent({
       this.index = this.getTaskIndex(title);
       this.setState(this.EDITING_TASK);
       this.newTask = title;
+    },
+    deleteTask(title: string): void {
+      this.todoList = this.todoList.filter((task) => task !== title);
     },
     exists():boolean {
       return this.todoList.includes(this.newTask);

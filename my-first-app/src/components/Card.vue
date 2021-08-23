@@ -7,7 +7,8 @@
     <div>
       <button class="btn btn-success btn-sm"
        @click="edit"><i class="fas fa-edit"></i></button>
-      <button class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></button>
+      <button class="btn btn-danger btn-sm"
+        @click="deleteTask"><i class="fas fa-trash-alt"></i></button>
     </div>
   </div>
 </div>
@@ -29,9 +30,12 @@ export default defineComponent({
     };
   },
   methods: {
-    edit():void {
+    edit(): void {
       this.isEditing = true;
       this.$emit('message', this.title);
+    },
+    deleteTask(): void {
+      this.$emit('title', this.title);
     },
   },
 });
