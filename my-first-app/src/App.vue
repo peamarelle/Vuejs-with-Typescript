@@ -51,7 +51,7 @@ export default defineComponent({
         const taskModified = (this.newTaskIsEmpty() || this.exists()) ? this.todoList[this.index] : this.newTask;
         this.modify(this.index, taskModified);
       }
-      localStorage.setItem('tasks', JSON.stringify(this.todoList));
+      this.saveTasks();
       this.clearNewTask();
     },
     clearNewTask():void {
@@ -67,6 +67,7 @@ export default defineComponent({
     },
     deleteTask(title: string): void {
       this.todoList = this.todoList.filter((task) => task !== title);
+      this.saveTasks();
     },
     exists():boolean {
       return this.todoList.some((task) => this.newTask.trim() === task.trim());
@@ -85,9 +86,15 @@ export default defineComponent({
       this.setState(this.EDITED_TASK);
       this.index = -1;
     },
+    saveTasks():void {
+      localStorage.setItem('tasks', JSON.stringify(this.todoList));
+    },
+    getAllTasks(): string | null {
+      return localStorage.getItem('tasks');
+    }
   },
   mounted() {
-    const tasks = localStorage.getItem('tasks');
+    const tasks = this.getAllTasks();
     if (tasks) {
       this.todoList = JSON.parse(tasks);
     } else {
