@@ -6,9 +6,9 @@
     </div>
     <div>
       <button class="btn btn-success btn-sm"
-       @click="edit"><i class="fas fa-edit"></i></button>
+       @click="edit"><i class="fas fa-edit"></i>Edit</button>
       <button class="btn btn-danger btn-sm"
-        @click="deleteTask"><i class="fas fa-trash-alt"></i></button>
+        @click="deleteTask"><i class="fas fa-trash-alt"></i>Delete</button>
     </div>
   </div>
 </div>

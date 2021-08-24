@@ -28,12 +28,13 @@ export default defineComponent({
   name: 'App',
   data() {
     return {
-      todoList: ['Ir a correr', 'Comprar en el almacen'],
+      todoList: [''],
       newTask: '',
       isEditing: false,
       index: -1,
       EDITING_TASK: true,
       EDITED_TASK: false,
+      DEFAULT_TASKS: ['Ir a correr', 'Comprar en el almacen'],
     };
   },
   components: {
@@ -42,20 +43,22 @@ export default defineComponent({
   },
   methods: {
     saveNewTask():void {
-      const checkCondition = (this.index === -1 && !this.exists() && !this.isEditing && this.newTask !== '');
+      const checkConditionNewItem = (!this.exists() && !this.isEditing && !this.newTaskIsEmpty());
 
-      if (checkCondition) {
+      if (checkConditionNewItem) {
         this.todoList.push(this.newTask);
-      } else {
-        this.modify(this.index, this.newTask);
-        this.clearNewTask();
+      } else if (this.isEditing) {
+        const taskModified = (this.newTaskIsEmpty() || this.exists()) ? this.todoList[this.index] : this.newTask;
+        this.modify(this.index, taskModified);
       }
+      localStorage.setItem('tasks', JSON.stringify(this.todoList));
+      this.clearNewTask();
     },
     clearNewTask():void {
       this.newTask = '';
     },
     newTaskIsEmpty():boolean {
-      return this.newTask !== '';
+      return this.newTask === '';
     },
     editTask(title: string):void {
       this.index = this.getTaskIndex(title);
@@ -66,7 +69,7 @@ export default defineComponent({
       this.todoList = this.todoList.filter((task) => task !== title);
     },
     exists():boolean {
-      return this.todoList.includes(this.newTask);
+      return this.todoList.some((task) => this.newTask.trim() === task.trim());
     },
     getTaskIndex(title: string):number {
       return this.todoList.indexOf(title);
@@ -79,10 +82,17 @@ export default defineComponent({
     },
     modify(index: number, task: string): void {
       this.todoList[index] = `${task} `;
-      this.todoList[index].trim();
       this.setState(this.EDITED_TASK);
       this.index = -1;
     },
+  },
+  mounted() {
+    const tasks = localStorage.getItem('tasks');
+    if (tasks) {
+      this.todoList = JSON.parse(tasks);
+    } else {
+      this.todoList = this.DEFAULT_TASKS;
+    }
   },
 });
 </script>
