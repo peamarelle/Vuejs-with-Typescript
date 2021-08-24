@@ -63,7 +63,7 @@ export default defineComponent({
     editTask(title: string):void {
       this.index = this.getTaskIndex(title);
       this.setState(this.EDITING_TASK);
-      this.newTask = title;
+      this.newTask = title.trim();
     },
     deleteTask(title: string): void {
       this.todoList = this.todoList.filter((task) => task !== title);
